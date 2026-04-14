@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="240dp"
     android:layout_margin="8dp"
-    app:cardCornerRadius="18dp"
     android:background="@color/white"
     app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="18dp"
     app:cardElevation="12dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,49 +17,74 @@
         <ImageView
             android:id="@+id/articleimg"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
+        <View
+            android:id="@+id/shadow_view"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:alpha="0.4"
+            android:background="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
         <TextView
             android:id="@+id/articletitle_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:layout_marginBottom="4dp"
             android:layout_marginStart="4dp"
+            android:fontFamily="@font/cairo_semibold"
             android:maxLines="1"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/articleimg"
+            app:layout_constraintTop_toTopOf="@id/shadow_view"
             tools:text="@tools:sample/full_names" />
 
         <TextView
             android:id="@+id/articleauthor_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:layout_marginBottom="4dp"
             android:layout_marginEnd="4dp"
+            android:fontFamily="@font/cairo_medium"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/articletitle_tv"
             tools:text="@tools:sample/full_names" />
+
         <TextView
             android:id="@+id/articledescription_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="18sp"
+            android:layout_marginHorizontal="4dp"
             android:layout_marginTop="4dp"
-     android:layout_marginHorizontal="4dp"
-            android:maxLines="3"
+            android:fontFamily="@font/cairo_medium"
+            android:maxLines="2"
+            android:textColor="@color/white"
+            android:layout_marginBottom="6dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:maxLength="100"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/shadow_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/articleauthor_tv"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:src="@tools:sample/lorem" />
+            tools:text="@tools:sample/lorem/random" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/share_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/share_ic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

@@ -1,11 +1,11 @@
 package com.examble.whatnow
 
-import android.content.DialogInterface
+
+import android.content.Intent
 import android.os.Bundle
-import android.widget.TableLayout
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -14,7 +14,6 @@ import com.examble.whatnow.API.ArticlesItem
 import com.examble.whatnow.API.NewsResponse
 import com.examble.whatnow.API.Source
 import com.examble.whatnow.API.SourcesPackage.NewsSources
-import com.examble.whatnow.API.WebServices
 import com.examble.whatnow.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
@@ -24,6 +23,7 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
     lateinit var viewbinding: ActivityMainBinding
+    var currentSourceId: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         // https://newsapi.org/v2/top-headlines?country=us&category=general&apiKey=b18571bc6ee24e2ba006503342700cce&pageSize=30
         super.onCreate(savedInstanceState)
@@ -37,6 +37,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         getSources()
+        viewbinding.swipeRefresh.setOnRefreshListener {
+            getNewsResponse(currentSourceId)
+        }
     }
     private fun getSources(){
         viewbinding.progressBar.isVisible = true
@@ -50,6 +53,7 @@ class MainActivity : AppCompatActivity() {
                     response: Response<NewsSources>
                 ) {
                     viewbinding.progressBar.isVisible = false
+                    viewbinding.swipeRefresh.isRefreshing=false
                     if (response.isSuccessful) {
                         bindTabs(response.body()?.sources)
                         return
@@ -79,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                     t: Throwable
                 ) {
                     viewbinding.progressBar.isVisible = false
+                    viewbinding.swipeRefresh.isRefreshing=false
                   handleError(t){
                      getSources()
                   }
@@ -87,7 +92,9 @@ class MainActivity : AppCompatActivity() {
             })
     }
     private fun getNewsResponse(sourceId :String) {
+        currentSourceId = sourceId
         viewbinding.progressBar.isVisible = true
+        viewbinding.swipeRefresh.isRefreshing=false
         ApiManager
             .getApis()
             .getNewsResponse( pageSize = 30, sources = sourceId)
@@ -98,7 +105,9 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     viewbinding.progressBar.isVisible = false
                     if (response.isSuccessful) {
-                        setupRecycler(response.body()?.articles)
+                        val articles= response.body()?.articles
+                            ?.filter { it?.title != "[Removed]" }
+                        setupRecycler(articles)
                     } else {
                         val errorResponseFromJson = response.errorBody()?.string()
                         val response =
@@ -114,6 +123,7 @@ class MainActivity : AppCompatActivity() {
                     t: Throwable
                 ) {
                     viewbinding.progressBar.isVisible = false
+                    viewbinding.swipeRefresh.isRefreshing=false
                     handleError(t){
                         getNewsResponse(sourceId)
                     }
@@ -155,7 +165,8 @@ class MainActivity : AppCompatActivity() {
         if (list == null) return
         viewbinding.recyclerView.apply {
             adapter = articlesAdapter(list) { item ->
-                // on item click
+               val i = Intent(Intent.ACTION_VIEW,item.url?.toUri())
+                startActivity(i)
             }
         }
     }
